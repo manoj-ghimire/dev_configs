@@ -22,11 +22,13 @@ call plug#begin('~/.config/nvim/plugged')
 " Load themes
 Plug 'morhetz/gruvbox'
 Plug 'dracula/vim'
-Plug 'sonph/onehalf'
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'embark-theme/vim', { 'as': 'embark', 'branch': 'main' }
 
 " NERDTree
 Plug 'ryanoasis/vim-devicons'
 Plug 'preservim/nerdtree'
+
 
 " Syntactic language support
 Plug 'cespare/vim-toml'
@@ -259,7 +261,6 @@ nnoremap <silent> <C-b> :NERDTreeToggle<CR>
 "map <silent> <C-n> :NERDTreeFocus<CR>
 
 "Current theme
-colorscheme dracula
 
 
 " =============================================================================
@@ -398,3 +399,12 @@ nnoremap <D-s> :w<CR>        "normalmode
 "###########   NeoVide   ############################
 let g:neovide_cursor_vfx_mode = "railgun"
 
+"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+if (has("nvim"))
+  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+
+set background=dark
+" Current color scheme
+colorscheme dracula 
