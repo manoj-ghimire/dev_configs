@@ -1,96 +1,164 @@
+"Mostly stolen from Yan Pritzer's most excellent Yadr (github.com/skwp/dotfiles)
 
-" ================================
-" ====== Auto isntall vim plug ===
-" ================================
-" auto-install vim-plug                                                                                                                
-if empty(glob('~/.config/nvim/autoload/plug.vim'))                                                                                    
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \                                                                  
-      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim                                                             
-  autocmd VimEnter * PlugInstall                                                                                                      
-endif           
-
-
-
-
-" =============================================================================
-" # PLUGINS
-" =============================================================================
-" Load vundle
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
 set nocompatible
+
+
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+      silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs\
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall
+endif
+
+
+" ================ General Config ====================
+"
+"
+set number                      "Line numbers are good
+set backspace=indent,eol,start  "Allow backspace in insert mode
+set history=1000                "Store lots of :cmdline history
+set showcmd                     "Show incomplete cmds down the bottom
+set showmode                    "Show current mode down the bottom
+set gcr=a:blinkon0              "Disable cursor blink
+set visualbell                  "No sounds
+set autoread                    "Reload files changed outside vim
+
+" This makes vim act like all other editors, buffers can
+" exist in the background without being in a window.
+" http://items.sjbach.com/319/configuring-vim-right
+set hidden
+
+"turn on syntax highlighting
+syntax on
+
+" ================ Turn Off Swap Files ==============
+
+set noswapfile
+set nobackup
+set nowb
+
+" ================ Persistent Undo ==================
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+" ================ Indentation ======================
+
+"set autoindent
+"set smartindent
+"set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+
+" Auto indent pasted text
+nnoremap p p=`]<C-o>
+nnoremap P P=`]<C-o>p
+
+
 call plug#begin('~/.config/nvim/plugged')
 
-" Load themes
-Plug 'morhetz/gruvbox'
-Plug 'dracula/vim'
-Plug 'drewtempelmeyer/palenight.vim'
-Plug 'embark-theme/vim', { 'as': 'embark', 'branch': 'main' }
+  " Cool plugins
 
-" NERDTree
-Plug 'ryanoasis/vim-devicons'
-Plug 'preservim/nerdtree'
+  "DevIcons
+  Plug 'ryanoasis/vim-devicons'
 
+  " NERDTree
+  Plug 'preservim/nerdtree'
 
-" Syntactic language support
-Plug 'cespare/vim-toml'
-Plug 'stephpy/vim-yaml'
-Plug 'rhysd/vim-clang-format'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
+  " Fuzzy Finder
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
 
+  " Syntactic language support
+  Plug 'cespare/vim-toml'
+  Plug 'stephpy/vim-yaml'
+  Plug 'rhysd/vim-clang-format'
+  Plug 'godlygeek/tabular'
+  Plug 'plasticboy/vim-markdown'
 
-" Fuzzy finder
-Plug 'airblade/vim-rooter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  "GUI enhancements
+  Plug 'itchyny/lightline.vim'
+  Plug 'andymass/vim-matchup'
 
-Plug 'junegunn/fzf.vim'
+  " Autopair matching
+  Plug 'cohama/lexima.vim'
 
-"GUI enhancements
-Plug 'itchyny/lightline.vim'
-Plug 'andymass/vim-matchup'
+  "Plug 'Shougo/neocomplete.vim'
+  "Plug 'tommcdo/vim-exchange'
+  "Plug 'ntpeters/vim-better-whitespace'
+  "Plug 'tpope/vim-surround'
+  "Plug 'tpope/vim-repeat'
+  "Plug 'jiangmiao/auto-pairs'
+  "Plug 'vim-scripts/CursorLineCurrentWindow'
+  "Plug 'victormours/better-writing.vim'
+  "Plug 'janko-m/vim-test'
+  "Plug 'skywind3000/asyncrun.vim'
+  "Plug 'dense-analysis/ale'
+ 
+  " ##### Rust plugins ###########
+ 
+  " Collection of common configurations for the     Nvim LSP client
+  Plug 'neovim/nvim-lspconfig'
+  " Completion framework
+  Plug 'hrsh7th/nvim-cmp'
+  " LSP completion source for nvim-cmp
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  " Snippet completion source for nvim-cmp
+  Plug 'hrsh7th/cmp-vsnip'
+  " Other usefull completion sources
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-buffer'
+  " See hrsh7th's other plugins for more complet    ion sources!
+  " To enable more of the features of rust-analy    zer, such as inlay hints and more!
+  Plug 'simrat39/rust-tools.nvim'
+  " Snippet engine
+  Plug 'hrsh7th/vim-vsnip'
+  " Formating rust
+  Plug 'rust-lang/rust.vim'
+  
+  " ### Rust Plugins End ####
 
-"Git
-Plug 'tpope/vim-fugitive'
-
-" Autopair matching
-Plug 'cohama/lexima.vim' 
-
-" Rust settings
-
-" Collection of common configurations for the Nvim LSP client
-Plug 'neovim/nvim-lspconfig'
-
-" Completion framework
-Plug 'hrsh7th/nvim-cmp'
-
-" LSP completion source for nvim-cmp
-Plug 'hrsh7th/cmp-nvim-lsp'
-
-" Snippet completion source for nvim-cmp
-Plug 'hrsh7th/cmp-vsnip'
-
-" Other usefull completion sources
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-buffer'
-
-" See hrsh7th's other plugins for more completion sources!
-
-" To enable more of the features of rust-analyzer, such as inlay hints and more!
-Plug 'simrat39/rust-tools.nvim'
-
-" Snippet engine
-Plug 'hrsh7th/vim-vsnip'
-
-" Formating rust
-Plug 'rust-lang/rust.vim'
+  " Search
+  "Plug 'henrik/vim-indexed-search'
+  "Plug 'nixprime/cpsm'
+  "Plug 'mileszs/ack.vim'
+  
+  " Git
+  Plug 'tpope/vim-fugitive'
+  
+  " Visuals
+  Plug 'dracula/vim'
+  
+  " Commenting
+  "Plug 'tomtom/tlib_vim'
+  "Plug 'tomtom/tcomment_vim'
+  
+  " HTML
+  "Plug 'mattn/emmet-vim'
+  "Plug 'slim-template/vim-slim'
+  "Plug 'mustache/vim-mustache-handlebars'
+  
+  " Javascript
+  "Plug 'pangloss/vim-javascript'
+  "Plug 'mxw/vim-jsx'
+  "Plug 'othree/yajs.vim'
+  "Plug 'othree/javascript-libraries-syntax.vim'
+  "Plug 'claco/jasmine.vim'
+  "Plug 'kchmck/vim-coffee-script'
+  "Plug 'lfilho/cosco.vim'
+  
+  " Terraform
+  "Plug 'hashivim/vim-terraform'
 
 call plug#end()
 
-"============== LEXIMA Customize =========
-"CUSTOMIZATION
-call lexima#add_rule({'char': '<', 'input_after': '>', 'filetype': '*.rs'})
-"call lexima#add_rule({'char': '$', 'at': '\%#\$', 'leave': 1, 'filetype': 'latex'})
-"call lexima#add_rule({'char': '<BS>', 'at': '\$\%#\$', 'delete': 1, 'filetype': 'latex'})
-
+syntax enable
 
 
 "=====================================================
@@ -135,31 +203,31 @@ local opts = {
     -- these override the defaults set by rust-tools.nvim
     -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
     server = {
-        -- on_attach is a callback called when the language server attachs to the buffer
-        -- on_attach = on_attach,
-        settings = {
-            -- to enable rust-analyzer settings visit:
-            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-            ["rust-analyzer"] = {
-								assist = {
-									importMergeBehavior = "last",
-									importPrefix = "by_self",
-								},
-								diagnostics = {
-									disabled = { "unresolved-import" }
-								},
-								cargo = {
-									loadOutDirsFromCheck = true
-								},
-								procMacro = {
-									enable = true
-								},                
-									-- enable clippy on save
-                checkOnSave = {
-                    command = "clippy"
-                },
-            }
+      -- on_attach is a callback called when the language server attachs to the buffer
+      -- on_attach = on_attach,
+      settings = {
+        -- to enable rust-analyzer settings visit:
+        -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+        ["rust-analyzer"] = {
+          assist = {
+            importMergeBehavior = "last",
+            importPrefix = "by_self",
+            },
+          diagnostics = {
+            disabled = { "unresolved-import" }
+            },
+          cargo = {
+            loadOutDirsFromCheck = true
+            },
+          procMacro = {
+          enable = true
+          },                
+        -- enable clippy on save
+        checkOnSave = {
+          command = "clippy"
+          },
         }
+      }
     },
 }
 
@@ -234,144 +302,23 @@ nnoremap <silent> g] <cmd>lua vim.diagnostic.goto_next()<CR>
 set signcolumn=yes
 
 
-
-"============= NeoClide  ============================= 
-
-"Intellesense and syntax hilighting
-"FZF Fuzzy Finder
-nnoremap <C-p> :FZF<CR>
+" FZF key bindings
+nnoremap <C-f> :FZF<CR>
 let g:fzf_action = {
-			\ 'ctrl-t': 'tab split',
-			\ 'ctrl-s': 'split',
-			\ 'ctrl-v': 'vsplit'
-			\}
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-i': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
-"To ignore node_modules, and all files included in the .gitignore file, you’ll need to tell fzf to use silversearcher-ag:
-let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
-"NERDTree
-let g:NERDTreeShowHidden = 1
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeIgnore = []
-let g:NERDTreeStatusline = ''
-" Automaticaly close nvim if NERDTree is only thing left open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" NERD Tree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+
 " Toggle
 nnoremap <silent> <C-b> :NERDTreeToggle<CR>
-"map <silent> <C-n> :NERDTreeFocus<CR>
+map <silent> <C-n> :NERDTreeFocus<CR>
 
-"Current theme
-
-
-" =============================================================================
-" # Editor settings
-" =============================================================================
-filetype plugin indent on
-set autoindent
-set timeoutlen=300 " http://stackoverflow.com/questions/2158516/delay-before-o-opens-a-new-line
-set encoding=utf-8
-set scrolloff=2
-set noshowmode
-set hidden
-set nowrap
-set nojoinspaces
-let g:sneak#s_next = 1
-let g:vim_markdown_new_list_item_indent = 0
-let g:vim_markdown_auto_insert_bullets = 0
-let g:vim_markdown_frontmatter = 1
-set printencoding=utf-8
-" Always draw sign column. Prevent buffer moving when adding/deleting sign.
-set signcolumn=yes
-
-
-"Editor specific
-syntax on
-"set colorcolumn=90
-set background=dark
-set number
-
-" Use wide tabs
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
-set noexpandtab
-
-" Wrapping options
-set formatoptions=tc " wrap text and comments using textwidth
-set formatoptions+=r " continue comments when pressing ENTER in I mode
-set formatoptions+=q " enable formatting of comments with gq
-set formatoptions+=n " detect lists for formatting
-set formatoptions+=b " auto-wrap in insert mode, and do not wrap old long lines
-
-
-
-set smartcase
-set hlsearch
-set noerrorbells
-
-
-" =============================================================================
-" # GUI settings
-" =============================================================================
-set guioptions-=T " Remove toolbar
-set vb t_vb= " No more beeps
-set backspace=2 " Backspace over newlines
-set nofoldenable
-set ttyfast
-" https://github.com/vim/vim/issues/1735#issuecomment-383353563
-set lazyredraw
-set synmaxcol=500
-set laststatus=2
-set relativenumber " Relative line numbers
-set number " Also show current absolute line
-set diffopt+=iwhite " No whitespace in vimdiff
-" Make diffing better: https://vimways.org/2018/the-power-of-diff/
-set diffopt+=algorithm:patience
-set diffopt+=indent-heuristic
-set colorcolumn=80 " and give me a colored column
-set showcmd " Show (partial) command in status line.
-set mouse=a " Enable mouse usage (all modes) in terminals
-set shortmess+=c " don't give |ins-completion-menu| messages.
-
-" Show those damn hidden characters
-" Verbose: set listchars=nbsp:¬,eol:¶,extends:»,precedes:«,trail:•
-set listchars=nbsp:¬,extends:»,precedes:«,trail:•
-
-
-
-" =============================================================================
-" # Keyboard shortcuts
-" =============================================================================
-" ; as :
-nnoremap ; :
-" Jump to start and end of line using the home row keys
-map H ^
-map L $
-
-" Move by line
-nnoremap j gj
-nnoremap k gk
-
-
-" =============================================================================
-" # Autocommands
-" =============================================================================
-" Leave paste mode when leaving insert mode
-autocmd InsertLeave * set nopaste
-" Follow Rust code style rules
-"au Filetype rust source ~/.config/nvim/scripts/spacetab.vim
-au Filetype rust set colorcolumn=100
-autocmd BufNewFile,BufRead *.rs set filetype=rust
-"The :update command only saves the buffer if it is modified. If you also wanted this to happen while insert mode is active, CursorHoldI could be added to the event list.
-"autocmd CursorHold,CursorHoldI * update
-
-
-syntax enable
-filetype plugin indent on
-let g:rustfmt_autosave = 1
-
-" Quick-save
-nmap <leader>w :w<CR>
 
 " Move line up or down
 nnoremap <S-Up> :m-2<CR>
@@ -379,32 +326,40 @@ nnoremap <S-Down> :m+<CR>
 inoremap <S-Up> <Esc>:m-2<CR>
 inoremap <S-Down> <Esc>:m+<CR>
 
-" Command to save the file
-"nmap <c-s> :w<cr>
-"imap <c-s> <esc>:w<cr>
-"nnoremap <leader>l <C-s>l
-inoremap <D-s> <ESC>:w<CR>i  "insertmode
-nnoremap <D-s> :w<CR>        "normalmode
 
+" Better search
+set hlsearch
+set incsearch
 
-" Auto insert matching sets
-"inoremap { {}<Esc>ha
-"inoremap ( ()<Esc>ha
-"inoremap [ []<Esc>ha
-"inoremap " ""<Esc>ha
-"inoremap ' ''<Esc>ha
-"inoremap ` ``<Esc>ha
+" grep word under cursor
+nnoremap <Leader>g :grep! "\b<C-R><C-W>\b"<CR>:cw<CR><CR>
 
-"####################################################
-"###########   NeoVide   ############################
-let g:neovide_cursor_vfx_mode = "railgun"
+set nowrap       "Don't wrap lines
+set linebreak    "Wrap lines at convenient points
 
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-if (has("nvim"))
-  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
+" Move normally between wrapped lines
+nmap j gj
+nmap k gk
+vmap j gj
+vmap k gk
+
+autocmd BufReadPre,FileReadPre *.md :set wrap
+
+autocmd FocusLost * silent! wa " Automatically save file
+
+set scrolloff=5 " Keep 5 lines below and above the cursor
+
+set cursorline
+
+set mouse=a " Enable mouse usage (all modes) in terminals
+set shortmess+=c " don't give |ins-completion-menu| messages    
+
+set laststatus=2
+set relativenumber " Relative line numbers
+set number " Also show current absolute line
+set diffopt+=iwhite " No whitespace in vimdiff
+
 
 set background=dark
 " Current color scheme
-colorscheme dracula 
+colorscheme dracula
